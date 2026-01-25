@@ -1,0 +1,9 @@
+{
+    "fields": [],
+    "grouping": "status",
+    "format": "markdown",
+    "include_learning": true,
+    "include_young": true,
+    "include_mature": true,
+    "last_export_dir": ""
+}

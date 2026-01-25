@@ -1,7 +1,6 @@
 # Anki Vocab Exporter
 
-An Anki addon that exports your vocabulary in an LLM-friendly format. 
-Anki doesn't have a simple way to do this, so I built one. Feed the export to an LLM to generate example sentences or quizzes using only words you already know.
+An Anki addon that exports your vocabulary to JSON or Markdown. Words are grouped by maturity level (Learning, Young, Mature) based on your review history.
 
 *This is a personal tool shared as-is. I don't publish it to the official Anki addon repo because I'd rather not maintain it. Feel free to fork and adapt it to your needs.*
 
@@ -9,7 +8,7 @@ Anki doesn't have a simple way to do this, so I built one. Feed the export to an
 ## Export Formats
 1. **JSON**
 
-2. **Markdown**: useful for LLMs. Words are grouped by maturity level in CSV format:
+2. **Markdown**: Words are grouped by maturity level in CSV format. Also works well as input for LLMs to generate example sentences or quizzes using only words you already know.
     ```
     ## Learning
 

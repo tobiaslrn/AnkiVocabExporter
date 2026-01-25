@@ -1,6 +1,6 @@
 # Anki Vocab Exporter
 
-An Anki addon that exports your vocabulary to JSON or Markdown. Words are grouped by maturity level (Learning, Young, Mature) based on your review history.
+An Anki addon that exports your known vocabulary to JSON or Markdown. Words are grouped by maturity level (Learning, Young, Mature) based on your review history.
 
 *This is a personal tool shared as-is. I don't publish it to the official Anki addon repo because I'd rather not maintain it. Feel free to fork and adapt it to your needs.*
 

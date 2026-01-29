@@ -8,6 +8,7 @@ DEFAULT_CONFIG = {
     "include_young": True,
     "include_mature": True,
     "last_export_dir": "",
+    "predictive_days": 0,
 }
 
 

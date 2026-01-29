@@ -276,7 +276,7 @@ class ExportDialog(QDialog):
             if day_offset == 0:
                 day_filename = f"vocab_{target_date.isoformat()}{ext}"
             else:
-                day_filename = f"vocab_prediction_{target_date.isoformat()}{ext}"
+                day_filename = f"vocab_pred_{target_date.isoformat()}{ext}"
             return os.path.join(export_dir, day_filename)
         return output_path
 

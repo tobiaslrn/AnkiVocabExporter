@@ -48,6 +48,18 @@ def fetch_cards(query: str) -> List[int]:
     return mw.col.find_cards(query)
 
 
+def sort_cards_by_first_review(card_ids: List[int]) -> List[int]:
+    """Sort card IDs by first review date, with most recently learned first."""
+
+    def get_first_review(cid: int) -> int:
+        # Query the revlog for the earliest review of this card
+        result = mw.col.db.scalar("SELECT MIN(id) FROM revlog WHERE cid = ?", cid)
+        # revlog.id is timestamp in milliseconds; return 0 if never reviewed
+        return result if result else 0
+
+    return sorted(card_ids, key=get_first_review, reverse=True)
+
+
 def extract_row(card_id: int, requested_fields: List[str]) -> Dict[str, str]:
     card = mw.col.get_card(card_id)
     note = card.note()

@@ -22,6 +22,7 @@ from .queries import (
     fetch_cards,
     get_deck_names,
     get_fields_for_deck,
+    sort_cards_by_first_review,
 )
 from .writers import write_json, write_markdown
 
@@ -91,13 +92,19 @@ class ExportDialog(QDialog):
         self.status_layout.addWidget(QLabel("Include:"))
         self.learning_cb = QCheckBox("Learning")
         self.learning_cb.setChecked(self.config.get("include_learning", True))
-        self.young_cb = QCheckBox("Young (<21 days)")
+        self.fresh_cb = QCheckBox("Fresh (1-7d)")
+        self.fresh_cb.setChecked(self.config.get("include_fresh", True))
+        self.young_cb = QCheckBox("Young (8-20d)")
         self.young_cb.setChecked(self.config.get("include_young", True))
-        self.mature_cb = QCheckBox("Mature (≥21 days)")
+        self.mature_cb = QCheckBox("Mature (21-89d)")
         self.mature_cb.setChecked(self.config.get("include_mature", True))
+        self.mastered_cb = QCheckBox("Mastered (90d+)")
+        self.mastered_cb.setChecked(self.config.get("include_mastered", True))
         self.status_layout.addWidget(self.learning_cb)
+        self.status_layout.addWidget(self.fresh_cb)
         self.status_layout.addWidget(self.young_cb)
         self.status_layout.addWidget(self.mature_cb)
+        self.status_layout.addWidget(self.mastered_cb)
         layout.addLayout(self.status_layout)
 
         self.group_combo.currentIndexChanged.connect(self.update_status_visibility)
@@ -131,8 +138,10 @@ class ExportDialog(QDialog):
     def update_status_visibility(self):
         show_status = self.group_combo.currentData() == "status"
         self.learning_cb.setVisible(show_status)
+        self.fresh_cb.setVisible(show_status)
         self.young_cb.setVisible(show_status)
         self.mature_cb.setVisible(show_status)
+        self.mastered_cb.setVisible(show_status)
         for i in range(self.status_layout.count()):
             widget = self.status_layout.itemAt(i).widget()
             if widget:
@@ -187,29 +196,49 @@ class ExportDialog(QDialog):
 
         if grouping == "none":
             all_query = build_query(deck, "")
-            all_ids = fetch_cards(all_query)
+            all_ids = sort_cards_by_first_review(fetch_cards(all_query))
             all_rows = [extract_row(cid, requested_fields) for cid in all_ids]
             sections.append(("All Cards", all_rows))
         else:
             if self.learning_cb.isChecked():
                 learning_query = build_query(deck, "is:learn")
-                learning_ids = fetch_cards(learning_query)
+                learning_ids = sort_cards_by_first_review(fetch_cards(learning_query))
                 learning_rows = [
                     extract_row(cid, requested_fields) for cid in learning_ids
                 ]
                 sections.append(("Learning", learning_rows))
 
+            if self.fresh_cb.isChecked():
+                fresh_query = build_query(
+                    deck, "is:review -is:learn prop:ivl>=1 prop:ivl<=7"
+                )
+                fresh_ids = sort_cards_by_first_review(fetch_cards(fresh_query))
+                fresh_rows = [extract_row(cid, requested_fields) for cid in fresh_ids]
+                sections.append(("Fresh", fresh_rows))
+
             if self.young_cb.isChecked():
-                young_query = build_query(deck, "is:review -is:learn prop:ivl<21")
-                young_ids = fetch_cards(young_query)
+                young_query = build_query(
+                    deck, "is:review -is:learn prop:ivl>=8 prop:ivl<=20"
+                )
+                young_ids = sort_cards_by_first_review(fetch_cards(young_query))
                 young_rows = [extract_row(cid, requested_fields) for cid in young_ids]
                 sections.append(("Young", young_rows))
 
             if self.mature_cb.isChecked():
-                mature_query = build_query(deck, "is:review -is:learn prop:ivl>=21")
-                mature_ids = fetch_cards(mature_query)
+                mature_query = build_query(
+                    deck, "is:review -is:learn prop:ivl>=21 prop:ivl<=89"
+                )
+                mature_ids = sort_cards_by_first_review(fetch_cards(mature_query))
                 mature_rows = [extract_row(cid, requested_fields) for cid in mature_ids]
                 sections.append(("Mature", mature_rows))
+
+            if self.mastered_cb.isChecked():
+                mastered_query = build_query(deck, "is:review -is:learn prop:ivl>=90")
+                mastered_ids = sort_cards_by_first_review(fetch_cards(mastered_query))
+                mastered_rows = [
+                    extract_row(cid, requested_fields) for cid in mastered_ids
+                ]
+                sections.append(("Mastered", mastered_rows))
 
             if not sections:
                 showWarning("Please select at least one status to include.")
@@ -227,8 +256,10 @@ class ExportDialog(QDialog):
             self.config["grouping"] = self.group_combo.currentData()
             self.config["format"] = export_format
             self.config["include_learning"] = self.learning_cb.isChecked()
+            self.config["include_fresh"] = self.fresh_cb.isChecked()
             self.config["include_young"] = self.young_cb.isChecked()
             self.config["include_mature"] = self.mature_cb.isChecked()
+            self.config["include_mastered"] = self.mastered_cb.isChecked()
             self.config["last_export_dir"] = os.path.dirname(output_path)
             save_config(self.config)
 

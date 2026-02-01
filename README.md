@@ -1,35 +1,38 @@
 # Anki Vocab Exporter
 
-An Anki addon that exports your known vocabulary to JSON or Markdown. Words are grouped by maturity level (Learning, Young, Mature) based on your review history.
+An Anki addon that exports your known vocabulary to Markdown. Words are grouped by maturity level (Learning, Young, Mature) based on your review history.
 
 *This is a personal tool shared as-is. I don't publish it to the official Anki addon repo because I'd rather not maintain it. Feel free to fork and adapt it to your needs.*
 
 
-## Export Formats
-1. **JSON**
+## Export Format
 
-2. **Markdown**: Words are grouped by maturity level in CSV format. Also works well as input for LLMs to generate example sentences or quizzes using only words you already know.
-    ```
-    ## Learning
+**Markdown**: Words are grouped by maturity level in CSV format. Works well as input for LLMs to generate example sentences or quizzes using only words you already know.
+```
+## Added Today
 
-    Word,Word Meaning
-    君,you (to someone of equal or lower status)
-    出来る,"can do, be good at"
-    本当,"truth, reality"
+Word,Word Meaning
+信じる,"to&nbsp;believe, to&nbsp;trust"
+自分,"self, oneself"
 
-    ## Young
+## Fresh
 
-    Word,Word Meaning
-    私,"I (polite, general)"
-    あなた,you (usually when one doesn't know the person)
-    彼,"he, him"
+Word,Word Meaning
+君,you (to someone of equal or lower status)
+本当,"truth, reality"
 
-    ## Mature
+## Young
 
-    Word,Word Meaning
-    日本語,Japanese language
-    本,book
-    ```
+Word,Word Meaning
+あなた,you (usually when one doesn't know the person)
+彼,"he, him"
+
+## Mature
+
+Word,Word Meaning
+日本語,Japanese language
+本,book
+```
 
 ## Usage
 Call via `Deck Settings > Export Vocabulary`

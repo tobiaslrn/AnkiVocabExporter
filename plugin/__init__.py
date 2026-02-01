@@ -20,5 +20,4 @@ def on_deck_browser_options_menu(menu, deck_id: int) -> None:
     action.triggered.connect(lambda: show_export_dialog(deck_name))
 
 
-gui_hooks.main_window_did_init.append(setup_menu)
 gui_hooks.deck_browser_will_show_options_menu.append(on_deck_browser_options_menu)
